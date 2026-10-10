@@ -106,26 +106,6 @@ QQ 号需使用字符串形式的 JSON 数组。账号同时出现在两个列�
 你今天的人品值是：88/100！为"大吉"，太牛了，您今天人品爆发了！
 ```
 
-## 📦 发布说明
-
-仓库提供 [PyPI 发布工作流](./.github/workflows/pypi-publish.yml)，使用 PEP 621 格式的 [pyproject.toml](./pyproject.toml) 构建 wheel 和源码包，并在上传前校验包信息。
-
-需要维护者自行完成的远程配置：
-
-1. 将仓库发布到 `HuParry/nonebot-plugin-jrrp4`，并将本地 Git remote 指向自己的仓库。
-2. 在 [PyPI](https://pypi.org/manage/account/#api-tokens) 创建 API Token，并在 GitHub 仓库的 Settings → Secrets and variables → Actions 中添加名为 `PYPI_API_TOKEN` 的 Repository secret。
-3. 发布新版本前修改 `pyproject.toml` 中的 `project.version` 和插件 `__plugin_meta__.extra` 中的 `version`，保持一致，并提交代码。
-4. 创建并推送对应版本的标签，触发工作流。例如当前版本：
-
-```bash
-git tag v0.3.0
-git push origin v0.3.0
-```
-
-标签版本必须与 `project.version` 一致，允许使用 `v` 前缀。工作流也可在 GitHub Actions 中手动运行；同一 PyPI 版本不能重复上传。
-
-如需提交 NoneBot 插件商店，维护者还需按 [官方发布指引](https://nonebot.dev/docs/developer/plugin-publishing) 操作；项目名为 `nonebot-plugin-jrrp4`，插件模块名为 `nonebot_plugin_jrrp4`。
-
 ## 📄 开源协议
 
 本项目采用 [MIT License](./LICENSE)。
