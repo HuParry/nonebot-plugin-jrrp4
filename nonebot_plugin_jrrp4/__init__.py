@@ -16,7 +16,7 @@ jrrp_config = get_plugin_config(Config)
 __plugin_meta__ = PluginMetadata(
     name="今日人品",
     description="bot给你预测今天的人品值",
-    usage="群聊发送 jrrp / 今日人品；可 @成员 查询对方，@机器人 查询机器人。查询者群等级需达到 10 级。",
+    usage="群聊发送 jrrp / 今日人品；可 @成员 查询对方，@机器人 查询机器人。",
     type="application",
     homepage="https://github.com/HuParry/nonebot-plugin-jrrp4",
     config=Config,
@@ -71,17 +71,19 @@ message: List[dict] = [
 
 high_list = jrrp_config.jrrp_high_list #列表中的人品爆发！
 low_list = jrrp_config.jrrp_low_list #列表中的人品极低！
+min_level = jrrp_config.jrrp_min_level
 @jrrp.handle()
 async def jrrp_handle(bot: Bot, event: GroupMessageEvent, args: Message = CommandArg()):
     user_id = event.user_id
     group_id = event.group_id
-    member_info = await bot.get_group_member_info(
-        user_id=user_id,
-        group_id=group_id
-    )
-    level = int(member_info.get('level'))
-    if level < 10:
-        await jrrp.finish('你的群聊等级不到10级，不告诉你今日人品！')
+    if min_level > 0:
+        member_info = await bot.get_group_member_info(
+            user_id=user_id,
+            group_id=group_id
+        )
+        level = int(member_info.get('level'))
+        if level < min_level:
+            await jrrp.finish(f'你的群聊等级不到{min_level}级，不告诉你今日人品！')
     if event.is_tome():
         id = event.self_id
         jrrp_num = await get_jrrp(str(id))

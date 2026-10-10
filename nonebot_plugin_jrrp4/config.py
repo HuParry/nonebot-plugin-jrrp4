@@ -4,5 +4,6 @@ from pydantic import BaseModel, Field
 
 
 class Config(BaseModel):
+    jrrp_min_level: int = Field(default=10, ge=0, le=100)
     jrrp_high_list: List[str] = Field(default_factory=list)
     jrrp_low_list: List[str] = Field(default_factory=list)
