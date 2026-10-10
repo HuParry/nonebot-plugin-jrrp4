@@ -181,3 +181,9 @@ pyrightconfig.json
 
 # macOS
 .DS_Store
+
+# Daily luck runtime database
+*.sqlite3
+*.sqlite3-journal
+*.sqlite3-wal
+*.sqlite3-shm

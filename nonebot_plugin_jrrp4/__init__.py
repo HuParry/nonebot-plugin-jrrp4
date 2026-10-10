@@ -1,12 +1,14 @@
-from nonebot.adapters.onebot.v11 import Bot, GroupMessageEvent, GROUP, Message, MessageSegment
+from nonebot.adapters.onebot.v11 import Bot, GroupMessageEvent, Message, MessageSegment
 from nonebot.plugin import on_command
 from nonebot.params import CommandArg
-from nonebot import get_plugin_config
-from datetime import date
+from nonebot import get_plugin_config, require
 import asyncio
 from typing import List
-import time
 from .config import Config
+from .luck import LuckEngine
+
+require("nonebot_plugin_localstore")
+import nonebot_plugin_localstore as localstore
 
 from nonebot.plugin import PluginMetadata
 
@@ -24,7 +26,7 @@ __plugin_meta__ = PluginMetadata(
     extra={
         "unique_name": "jrrp",
         "example": "今日人品 / jrrp",
-        "version": "0.2.3",
+        "version": "0.3.0",
     },
 )
 
@@ -72,6 +74,7 @@ message: List[dict] = [
 high_list = jrrp_config.jrrp_high_list #列表中的人品爆发！
 low_list = jrrp_config.jrrp_low_list #列表中的人品极低！
 min_level = jrrp_config.jrrp_min_level
+luck_engine = LuckEngine(localstore.get_plugin_data_file("luck.sqlite3"), high_list, low_list)
 @jrrp.handle()
 async def jrrp_handle(bot: Bot, event: GroupMessageEvent, args: Message = CommandArg()):
     user_id = event.user_id
@@ -107,43 +110,8 @@ async def jrrp_handle(bot: Bot, event: GroupMessageEvent, args: Message = Comman
             else:
                 print(1)
 
-async def rol(num: int, k: int, bits: int = 64):
-    b1 = bin(num << k)[2:]
-    if len(b1) <= bits:
-        return int(b1, 2)
-    return int(b1[-bits:], 2)
-
-async def get_hash(string: str):
-    num = 5381
-    num2 = len(string) - 1
-    for i in range(num2 + 1):
-        num = await rol(num, 5) ^ num ^ ord(string[i])
-    return num ^ 12218072394304324399
-
 async def get_jrrp(string: str):
-    now = time.localtime()
-    num = round(abs((await get_hash("".join([
-        "asdfgbn",
-        str(now.tm_yday),
-        "12#3$45",
-        str(now.tm_year),
-        "IUY"
-    ])) / 3 + await get_hash("".join([
-        "QWERTY",
-        string,
-        "0*8&6",
-        str(now.tm_mday),
-        "kjhg"
-    ])) / 3) / 527) % 1001)
-    if num >= 970:
-        num2 = 100
-    else:
-        num2 = round(num / 969 * 99)
-        if string in high_list:
-            num2 = 75 + num2 % 26;
-        elif string in low_list:
-            num2 = 40 - num2 % 41
-    return num2
+    return await asyncio.to_thread(luck_engine.score, string)
 
 async def get_msg(jrrp):
     start: str = "你今天的人品值是："
