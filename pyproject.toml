@@ -1,0 +1,36 @@
+[build-system]
+requires = ["setuptools>=77"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "nonebot-plugin-jrrp4"
+version = "0.2.3"
+description = "基于NoneBot2和OneBot V11的今日人品插件"
+readme = "README.md"
+requires-python = ">=3.10"
+license = "MIT"
+license-files = ["LICENSE"]
+authors = [{ name = "HuParry" }]
+keywords = ["nonebot", "nonebot2", "onebot", "jrrp"]
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3 :: Only",
+    "Natural Language :: Chinese (Simplified)",
+    "Operating System :: OS Independent",
+]
+dependencies = [
+    "nonebot2>=2.3.0,<3.0.0",
+    "nonebot-adapter-onebot>=2.4.0,<3.0.0",
+    "pydantic>=1.10.0,<3.0.0",
+]
+
+[project.urls]
+Homepage = "https://github.com/HuParry/nonebot-plugin-jrrp4"
+Repository = "https://github.com/HuParry/nonebot-plugin-jrrp4"
+Issues = "https://github.com/HuParry/nonebot-plugin-jrrp4/issues"
+
+[project.optional-dependencies]
+dev = ["build>=1.2.0", "twine>=5.0.0"]
+
+[tool.setuptools.packages.find]
+include = ["nonebot_plugin_jrrp4*"]
